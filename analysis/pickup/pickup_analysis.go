@@ -7,13 +7,13 @@ import (
 	"github.com/AlexCrane/tvslogparser/action"
 )
 
-type PickupAnalysis struct {
+type Pickup struct {
 	byType map[action.PickupType]int
 	total  int
 }
 
-func NewAnalysis(actions []action.Action) (*PickupAnalysis, error) {
-	analysis := &PickupAnalysis{
+func NewAnalysis(actions []action.Action) (*Pickup, error) {
+	analysis := &Pickup{
 		byType: make(map[action.PickupType]int),
 		total:  0,
 	}
@@ -36,7 +36,7 @@ func NewAnalysis(actions []action.Action) (*PickupAnalysis, error) {
 	return analysis, nil
 }
 
-func (p *PickupAnalysis) FormatAsString() string {
+func (p *Pickup) FormatAsString() string {
 	sb := strings.Builder{}
 
 	sb.WriteString(fmt.Sprintf("Total pickups: %d\n", p.total))
