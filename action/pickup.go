@@ -73,14 +73,22 @@ func (pt PickupType) String() string {
 }
 
 type Pickup struct {
-	t    int
+	tick int
 	Type PickupType
 }
 
 var _ Action = (*Pickup)(nil)
 
 func (p *Pickup) String() string {
-	return fmt.Sprintf("Pickup type %s", p.Type)
+	return fmt.Sprintf("Pickup type %s on tick %d", p.Type, p.tick)
+}
+
+func (p *Pickup) ActionType() ActionType {
+	return ActionTypePickup
+}
+
+func (p *Pickup) Tick() int {
+	return p.tick
 }
 
 func PickupFromCSVRecord(record []string) (*Pickup, error) {
@@ -142,15 +150,7 @@ func PickupFromCSVRecord(record []string) (*Pickup, error) {
 	}
 
 	return &Pickup{
-		t:    tick,
+		tick: tick,
 		Type: ptype,
 	}, nil
-}
-
-func (p *Pickup) ActionType() ActionType {
-	return ActionTypePickup
-}
-
-func (p *Pickup) Tick() int {
-	return p.t
 }
