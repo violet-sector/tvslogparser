@@ -3,6 +3,8 @@ package action
 import (
 	"fmt"
 	"strconv"
+
+	"github.com/AlexCrane/tvslogparser/common"
 )
 
 type Repair struct {
@@ -30,7 +32,7 @@ func (r *Repair) Tick() int {
 	return r.tick
 }
 
-func RepairFromCSVRecord(record []string, myPilotName string, myLevel int) (*Repair, error) {
+func RepairFromCSVRecord(record []string, myPlayer *common.Player) (*Repair, error) {
 	tick, err := strconv.Atoi(record[0])
 	if err != nil {
 		return nil, err
@@ -55,7 +57,7 @@ func RepairFromCSVRecord(record []string, myPilotName string, myLevel int) (*Rep
 		return nil, fmt.Errorf("failed to parse repair hitpoints remaining: %w", err)
 	}
 
-	if giver == myPilotName {
+	if giver == myPlayer.GetName() {
 		return &Repair{
 			tick:               tick,
 			Outgoing:           true,

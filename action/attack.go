@@ -3,6 +3,8 @@ package action
 import (
 	"fmt"
 	"strconv"
+
+	"github.com/AlexCrane/tvslogparser/common"
 )
 
 type Attack struct {
@@ -38,7 +40,7 @@ func (a *Attack) IsDeath() bool {
 	return !a.Outgoing && a.HitpointsRemaining == -1
 }
 
-func AttackFromCSVRecord(record []string, myPilotName string, myShipType string, myLevel int) (*Attack, error) {
+func AttackFromCSVRecord(record []string, myPlayer *common.Player) (*Attack, error) {
 	tick, err := strconv.Atoi(record[0])
 	if err != nil {
 		return nil, err
@@ -66,7 +68,7 @@ func AttackFromCSVRecord(record []string, myPilotName string, myShipType string,
 		return nil, fmt.Errorf("failed to parse attack hitpoints remaining: %w", err)
 	}
 
-	if attacker == myPilotName {
+	if attacker == myPlayer.GetName() {
 		return &Attack{
 			tick:               tick,
 			Outgoing:           true,

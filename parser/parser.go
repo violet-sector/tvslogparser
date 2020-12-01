@@ -9,16 +9,11 @@ import (
 	"strings"
 
 	"github.com/AlexCrane/tvslogparser/action"
-)
-
-const (
-	CruiserShipType = "cruiser/carrier"
+	"github.com/AlexCrane/tvslogparser/common"
 )
 
 type parserState struct {
-	pilotName        string
-	currentShipType  string
-	currentShipLevel int
+	myPlayer *common.Player
 }
 
 func (ps *parserState) NewActionFromCSVRecord(record []string) (action.Action, error) {
@@ -65,7 +60,7 @@ func (ps *parserState) NewActionFromCSVRecord(record []string) (action.Action, e
 		return action.HyperFromCSVRecord(record)
 	}
 	if strings.Contains(actionRecord, "attacked") {
-		return action.AttackFromCSVRecord(record, ps.pilotName, ps.currentShipType, ps.currentShipLevel)
+		return action.AttackFromCSVRecord(record, ps.myPlayer)
 	}
 	if strings.HasPrefix(actionRecord, "Achieved level") || strings.HasPrefix(actionRecord, "Awarded cruiser") {
 		return action.LevelUpFromCSVRecord(record)
@@ -77,7 +72,7 @@ func (ps *parserState) NewActionFromCSVRecord(record []string) (action.Action, e
 		if actionRecord == "Self repaired" {
 			return action.SelfRepFromCSVRecord(record)
 		}
-		return action.RepairFromCSVRecord(record, ps.pilotName, ps.currentShipLevel)
+		return action.RepairFromCSVRecord(record, ps.myPlayer)
 	}
 
 	return nil, errors.New("not implemented")
@@ -116,19 +111,13 @@ func ParseTVSLog(r io.Reader) ([]action.Action, error) {
 
 		if turnAction.ActionType() == action.ActionTypeAdded {
 			asAdded := turnAction.(*action.Added)
-			//log.Println(asAdded)
-			parserState.pilotName = asAdded.PilotName
+			parserState.myPlayer = common.NewPlayer(asAdded.PilotName)
 		} else if turnAction.ActionType() == action.ActionTypeSelectShip {
 			asSS := turnAction.(*action.SelectShip)
-			//log.Println(asSS)
-			parserState.currentShipType = asSS.ShipType
+			parserState.myPlayer.SelectShip(asSS.ShipType)
 		} else if turnAction.ActionType() == action.ActionTypeLevelUp {
 			asLevelUp := turnAction.(*action.LevelUp)
-			//log.Println(asLevelUp)
-			parserState.currentShipLevel = asLevelUp.Level
-			if asLevelUp.Level == 6 {
-				parserState.currentShipType = CruiserShipType
-			}
+			parserState.myPlayer.GetShip().LevelUp(asLevelUp.Level)
 		}
 
 		actions = append(actions, turnAction)

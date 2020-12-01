@@ -4,20 +4,19 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/AlexCrane/tvslogparser/common"
 )
 
 type LevelUp struct {
-	tick              int
-	Level             int
-	HasCombatPiloting bool
-	CombatDelta       int
-	PilotingDelta     int
+	tick  int
+	Level common.ShipLevel
 }
 
 var _ Action = (*LevelUp)(nil)
 
 func (l *LevelUp) String() string {
-	if l.Level == 6 {
+	if l.Level.Level == 6 {
 		return fmt.Sprintf("Acheived cruiser on tick %d", l.tick)
 	}
 	return fmt.Sprintf("Acheived level %d on tick %d", l.Level, l.tick)
@@ -31,10 +30,6 @@ func (l *LevelUp) Tick() int {
 	return l.tick
 }
 
-func (l *LevelUp) IsCruiser() bool {
-	return l.Level == 6
-}
-
 func LevelUpFromCSVRecord(record []string) (*LevelUp, error) {
 	tick, err := strconv.Atoi(record[0])
 	if err != nil {
@@ -43,8 +38,13 @@ func LevelUpFromCSVRecord(record []string) (*LevelUp, error) {
 
 	if strings.Contains(record[3], "cruiser") {
 		return &LevelUp{
-			tick:  tick,
-			Level: 6,
+			tick: tick,
+			Level: common.ShipLevel{
+				Level:             6,
+				HasCombatPiloting: true,
+				CombatDelta:       0,
+				PilotingDelta:     0,
+			},
 		}, nil
 	}
 
@@ -60,9 +60,11 @@ func LevelUpFromCSVRecord(record []string) (*LevelUp, error) {
 		}
 
 		return &LevelUp{
-			tick:              tick,
-			Level:             level,
-			HasCombatPiloting: false,
+			tick: tick,
+			Level: common.ShipLevel{
+				Level:             level,
+				HasCombatPiloting: false,
+			},
 		}, nil
 	}
 	if matches != 3 {
@@ -70,10 +72,12 @@ func LevelUpFromCSVRecord(record []string) (*LevelUp, error) {
 	}
 
 	return &LevelUp{
-		tick:              tick,
-		Level:             level,
-		HasCombatPiloting: true,
-		CombatDelta:       combat,
-		PilotingDelta:     piloting,
+		tick: tick,
+		Level: common.ShipLevel{
+			Level:             level,
+			HasCombatPiloting: true,
+			CombatDelta:       combat,
+			PilotingDelta:     piloting,
+		},
 	}, nil
 }
