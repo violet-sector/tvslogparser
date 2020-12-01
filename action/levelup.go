@@ -16,10 +16,7 @@ type LevelUp struct {
 var _ Action = (*LevelUp)(nil)
 
 func (l *LevelUp) String() string {
-	if l.Level.Level == 6 {
-		return fmt.Sprintf("Acheived cruiser on tick %d", l.tick)
-	}
-	return fmt.Sprintf("Acheived level %d on tick %d", l.Level, l.tick)
+	return fmt.Sprintf("Acheived %s on tick %d", l.Level.String(), l.tick)
 }
 
 func (l *LevelUp) ActionType() ActionType {
