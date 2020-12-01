@@ -16,22 +16,15 @@ type parserState struct {
 	myPlayer *common.Player
 }
 
-func (ps *parserState) NewActionFromCSVRecord(record []string) (action.Action, error) {
-	if len(record) != 6 {
-		return nil, fmt.Errorf("unexpected record len %d", len(record))
-	}
-
-	actionRecord := record[3]
-
-	// Start off wth logs we'll ignore
+func (ps *parserState) ignoreRecord(actionRecord string) bool {
 	if strings.HasPrefix(actionRecord, "Set autopilot to") {
-		return nil, nil
+		return true
 	}
 	if strings.HasPrefix(actionRecord, "Unset autopilot") {
-		return nil, nil
+		return true
 	}
 	if strings.HasPrefix(actionRecord, "Entered carrier") {
-		return nil, nil
+		return true
 	}
 	for _, s := range []string{
 		"Taken sector damage",
@@ -42,8 +35,23 @@ func (ps *parserState) NewActionFromCSVRecord(record []string) (action.Action, e
 	} {
 
 		if actionRecord == s {
-			return nil, nil
+			return true
 		}
+	}
+
+	return false
+}
+
+func (ps *parserState) NewActionFromCSVRecord(record []string) (action.Action, error) {
+	if len(record) != 6 {
+		return nil, fmt.Errorf("unexpected record len %d", len(record))
+	}
+
+	actionRecord := record[3]
+
+	// Start off wth logs we'll ignore
+	if ps.ignoreRecord(actionRecord) {
+		return nil, nil
 	}
 
 	// Now logs we're interested in
@@ -78,6 +86,19 @@ func (ps *parserState) NewActionFromCSVRecord(record []string) (action.Action, e
 	return nil, errors.New("not implemented")
 }
 
+func (ps *parserState) updateWithAction(turnAction action.Action) {
+	if turnAction.ActionType() == action.ActionTypeAdded {
+		asAdded := turnAction.(*action.Added)
+		ps.myPlayer = common.NewPlayer(asAdded.PilotName)
+	} else if turnAction.ActionType() == action.ActionTypeSelectShip {
+		asSS := turnAction.(*action.SelectShip)
+		ps.myPlayer.SelectShip(asSS.ShipType)
+	} else if turnAction.ActionType() == action.ActionTypeLevelUp {
+		asLevelUp := turnAction.(*action.LevelUp)
+		ps.myPlayer.GetShip().LevelUp(asLevelUp.Level)
+	}
+}
+
 func ParseTVSLog(r io.Reader) ([]action.Action, error) {
 	actions := make([]action.Action, 0)
 
@@ -109,17 +130,7 @@ func ParseTVSLog(r io.Reader) ([]action.Action, error) {
 			continue
 		}
 
-		if turnAction.ActionType() == action.ActionTypeAdded {
-			asAdded := turnAction.(*action.Added)
-			parserState.myPlayer = common.NewPlayer(asAdded.PilotName)
-		} else if turnAction.ActionType() == action.ActionTypeSelectShip {
-			asSS := turnAction.(*action.SelectShip)
-			parserState.myPlayer.SelectShip(asSS.ShipType)
-		} else if turnAction.ActionType() == action.ActionTypeLevelUp {
-			asLevelUp := turnAction.(*action.LevelUp)
-			parserState.myPlayer.GetShip().LevelUp(asLevelUp.Level)
-		}
-
+		parserState.updateWithAction(turnAction)
 		actions = append(actions, turnAction)
 	}
 

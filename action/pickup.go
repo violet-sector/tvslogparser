@@ -29,46 +29,32 @@ const (
 	PTRandomHyperGate
 )
 
-func (pt PickupType) String() string {
-	switch pt {
-	case PTNone:
-		return "None"
-	case PTFreeAttack:
-		return "Free attack"
-	case PTTripleAttack:
-		return "Triple attack"
-	case PTExplosive50:
-		return "-50 hitpoints"
-	case PTExplosive250:
-		return "-250 hitpoints"
-	case PTExplosive450:
-		return "-450 hitpoints"
-	case PTRepair150:
-		return "150 hitpoints"
-	case PTRepair200:
-		return "200 hitpoints"
-	case PTRepair300:
-		return "300 hitpoints"
-	case PTPoints100:
-		return "100 points"
-	case PTPoints150:
-		return "150 points"
-	case PTPoints250:
-		return "250 points"
-	case PTPoints300:
-		return "300 points"
-	case PTInvulnerability:
-		return "Invulnerability"
-	case PTHalfMaxRepair:
-		return "Half max repair"
-	case PTGateIntel:
-		return "Gate intel"
-	case PTDecoy:
-		return "Decoy"
-	case PTRandomHyperGate:
-		return "Random hyper gate"
-	}
+var pickupTypeToString = map[PickupType]string{
+	PTNone:            "None",
+	PTFreeAttack:      "Free attack",
+	PTTripleAttack:    "Triple attack",
+	PTExplosive50:     "-50 hitpoints",
+	PTExplosive250:    "-250 hitpoints",
+	PTExplosive450:    "-450 hitpoints",
+	PTRepair150:       "150 hitpoints",
+	PTRepair200:       "200 hitpoints",
+	PTRepair300:       "300 hitpoints",
+	PTPoints100:       "100 points",
+	PTPoints150:       "150 points",
+	PTPoints250:       "250 points",
+	PTPoints300:       "300 points",
+	PTInvulnerability: "Invulnerability",
+	PTHalfMaxRepair:   "Half max repair",
+	PTGateIntel:       "Gate intel",
+	PTDecoy:           "Decoy",
+	PTRandomHyperGate: "Random hyper gate",
+}
 
+func (pt PickupType) String() string {
+	s, ok := pickupTypeToString[pt]
+	if ok {
+		return s
+	}
 	return "<UNKNOWN>"
 }
 
@@ -104,53 +90,21 @@ func PickupFromCSVRecord(record []string) (*Pickup, error) {
 	// strip off trailing )
 	innerText = innerText[:len(innerText)-1]
 
-	var ptype PickupType
-	switch innerText {
-	case "None":
-		ptype = PTNone
-	case "Free attack":
-		ptype = PTFreeAttack
-	case "Triple attack":
-		ptype = PTTripleAttack
-	case "-50 hitpoints":
-		ptype = PTExplosive50
-	case "-250 hitpoints":
-		ptype = PTExplosive250
-	case "-450 hitpoints":
-		ptype = PTExplosive450
-	case "150 hitpoints":
-		ptype = PTRepair150
-	case "200 hitpoints":
-		ptype = PTRepair200
-	case "300 hitpoints":
-		ptype = PTRepair300
-	case "100 points":
-		ptype = PTPoints100
-	case "150 points":
-		ptype = PTPoints150
-	case "250 points":
-		ptype = PTPoints250
-	case "300 points":
-		ptype = PTPoints300
-	case "Invulnerability":
-		ptype = PTInvulnerability
-	case "Half max repair":
-		ptype = PTHalfMaxRepair
-	case "Random hyper gate":
-		ptype = PTRandomHyperGate
-	case "Decoy":
-		ptype = PTDecoy
-	default:
-		if strings.HasPrefix(innerText, "Gate intel") {
-			ptype = PTGateIntel
-			break
+	for k, v := range pickupTypeToString {
+		if innerText == v {
+			return &Pickup{
+				tick: tick,
+				Type: k,
+			}, nil
 		}
-
-		return nil, fmt.Errorf("not implemented %q", innerText)
 	}
 
-	return &Pickup{
-		tick: tick,
-		Type: ptype,
-	}, nil
+	if strings.HasPrefix(innerText, "Gate intel") {
+		return &Pickup{
+			tick: tick,
+			Type: PTGateIntel,
+		}, nil
+	}
+
+	return nil, fmt.Errorf("not implemented %q", innerText)
 }

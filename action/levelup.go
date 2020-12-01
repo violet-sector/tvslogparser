@@ -16,7 +16,7 @@ type LevelUp struct {
 var _ Action = (*LevelUp)(nil)
 
 func (l *LevelUp) String() string {
-	return fmt.Sprintf("Acheived %s on tick %d", l.Level.String(), l.tick)
+	return fmt.Sprintf("Achieved %s on tick %d", l.Level.String(), l.tick)
 }
 
 func (l *LevelUp) ActionType() ActionType {
