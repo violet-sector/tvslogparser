@@ -7,8 +7,11 @@ import (
 )
 
 type LevelUp struct {
-	tick  int
-	Level int
+	tick              int
+	Level             int
+	HasCombatPiloting bool
+	CombatDelta       int
+	PilotingDelta     int
 }
 
 var _ Action = (*LevelUp)(nil)
@@ -45,17 +48,32 @@ func LevelUpFromCSVRecord(record []string) (*LevelUp, error) {
 		}, nil
 	}
 
-	var level int
-	matches, err := fmt.Sscanf(record[3], "Achieved level %d", &level)
+	var level, combat, piloting int
+	matches, err := fmt.Sscanf(record[3], "Achieved level %d (added %d combat / %d piloting)", &level, &combat, &piloting)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse level up: %w", err)
+		matches, err = fmt.Sscanf(record[3], "Achieved level %d", &level)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse level up: %w", err)
+		}
+		if matches != 1 {
+			return nil, fmt.Errorf("unexpected matches in level up %d", matches)
+		}
+
+		return &LevelUp{
+			tick:              tick,
+			Level:             level,
+			HasCombatPiloting: false,
+		}, nil
 	}
-	if matches != 1 {
+	if matches != 3 {
 		return nil, fmt.Errorf("unexpected matches in level up %d", matches)
 	}
 
 	return &LevelUp{
-		tick:  tick,
-		Level: level,
+		tick:              tick,
+		Level:             level,
+		HasCombatPiloting: true,
+		CombatDelta:       combat,
+		PilotingDelta:     piloting,
 	}, nil
 }
