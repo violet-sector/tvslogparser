@@ -1,1 +1,1 @@
-# tvslogparser [![Build Status](https://travis-ci.com/AlexCrane/tvslogparser.svg?branch=main)](https://travis-ci.com/AlexCrane/tvslogparser)
+# tvslogparser [![Build Status](https://travis-ci.com/AlexCrane/tvslogparser.svg?branch=main)](https://travis-ci.com/AlexCrane/tvslogparser) [![Coverage Status](https://coveralls.io/repos/github/AlexCrane/tvslogparser/badge.svg?branch=main)](https://coveralls.io/github/AlexCrane/tvslogparser?branch=main)
