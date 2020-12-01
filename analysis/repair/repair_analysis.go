@@ -28,6 +28,11 @@ func NewAnalysis(actions []action.Action) (*Repair, error) {
 	for _, a := range actions {
 		if a.ActionType() == action.ActionTypeRepair {
 			repair := a.(*action.Repair)
+			if !repair.Outgoing {
+				// TODO: Have separate structs for incoming and outging repairs
+				// for now, ignore reps on me
+				continue
+			}
 
 			analysis.sortedRepHP = append(analysis.sortedRepHP, repair.Hitpoints)
 			analysis.repDistribution[repair.Hitpoints/bucketSize]++

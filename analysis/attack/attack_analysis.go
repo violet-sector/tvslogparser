@@ -28,6 +28,11 @@ func NewAnalysis(actions []action.Action) (*Attack, error) {
 	for _, a := range actions {
 		if a.ActionType() == action.ActionTypeAttack {
 			attack := a.(*action.Attack)
+			if !attack.Outgoing {
+				// TODO: Have separate structs for attacks/hits
+				// for now, ignore hits on me
+				continue
+			}
 
 			analysis.sortedDamage = append(analysis.sortedDamage, attack.Damage)
 			analysis.attackDistribution[attack.Damage/bucketSize]++
