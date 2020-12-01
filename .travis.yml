@@ -4,10 +4,5 @@ go:
  - 1.15.x
  - master
 
-os:
- - windows
- - linux
- - osx
-
 before_script: go vet ./...
 script: go test -v ./... -cover
