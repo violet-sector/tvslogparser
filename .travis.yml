@@ -4,5 +4,11 @@ go:
  - 1.15.x
  - master
 
-before_script: go vet ./...
-script: go test -v ./... -cover
+before_install:
+ - go get github.com/mattn/goveralls
+
+before_script: 
+  - go vet ./...
+
+script: 
+  - $GOPATH/bin/goveralls -service=travis-ci
