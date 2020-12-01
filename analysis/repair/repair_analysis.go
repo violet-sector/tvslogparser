@@ -59,7 +59,7 @@ func (p *Repair) FormatAsString() string {
 	sb.WriteString(fmt.Sprintf("Median repair : %d\n", p.sortedRepHP[len(p.sortedRepHP)/2]))
 	sb.WriteString(fmt.Sprintf("Range         : %d->%d\n", p.sortedRepHP[0], p.sortedRepHP[len(p.sortedRepHP)-1]))
 	sb.WriteString("Repair Distribution:\n")
-	for n, _ := range p.repDistribution {
+	for n := range p.repDistribution {
 		bucketRange := fmt.Sprintf("%d-%d", n*bucketSize, (n+1)*bucketSize)
 		sb.WriteString(fmt.Sprintf("%-9s ", bucketRange))
 	}

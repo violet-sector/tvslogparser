@@ -59,7 +59,7 @@ func (p *Attack) FormatAsString() string {
 	sb.WriteString(fmt.Sprintf("Median damage : %d\n", p.sortedDamage[len(p.sortedDamage)/2]))
 	sb.WriteString(fmt.Sprintf("Range         : %d->%d\n", p.sortedDamage[0], p.sortedDamage[len(p.sortedDamage)-1]))
 	sb.WriteString("Attack Distribution:\n")
-	for n, _ := range p.attackDistribution {
+	for n := range p.attackDistribution {
 		bucketRange := fmt.Sprintf("%d-%d", n*bucketSize, (n+1)*bucketSize)
 		sb.WriteString(fmt.Sprintf("%-9s ", bucketRange))
 	}
