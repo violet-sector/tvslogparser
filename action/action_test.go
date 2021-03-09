@@ -75,3 +75,11 @@ func Test_Pickup(t *testing.T) {
 		assert.Equal(t, tt.expectedPickupType, pickup.Type)
 	}
 }
+
+func Test_Round43(t *testing.T) {
+	// An additional two columns were added in round 43 logs - "Player damage taken","Player HP remaining"
+	pickupLog := []string{"6", "Red October", "", "Pickup (None)", "0", "0", "0", "0"}
+	pickup, err := action.PickupFromCSVRecord(pickupLog)
+	require.NoError(t, err)
+	t.Log(pickup)
+}

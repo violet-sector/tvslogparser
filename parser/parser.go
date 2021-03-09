@@ -43,7 +43,11 @@ func (ps *parserState) ignoreRecord(actionRecord string) bool {
 }
 
 func (ps *parserState) NewActionFromCSVRecord(record []string) (action.Action, error) {
-	if len(record) != 6 {
+	if len(record) == 6 {
+		common.Debugln("Round 42 record")
+	} else if len(record) == 8 {
+		common.Debugln("Round 43 record")
+	} else {
 		return nil, fmt.Errorf("unexpected record len %d", len(record))
 	}
 

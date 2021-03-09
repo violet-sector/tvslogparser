@@ -9,6 +9,7 @@ import (
 	"github.com/AlexCrane/tvslogparser/analysis/attack"
 	"github.com/AlexCrane/tvslogparser/analysis/pickup"
 	"github.com/AlexCrane/tvslogparser/analysis/repair"
+	"github.com/AlexCrane/tvslogparser/common"
 	"github.com/AlexCrane/tvslogparser/parser"
 )
 
@@ -17,11 +18,14 @@ func main() {
 	pickupAnalysisPtr := flag.Bool("pickups", false, "print pickup analysis")
 	attackAnalysisPtr := flag.Bool("attacks", false, "print attack analysis")
 	repairsAnalysisPtr := flag.Bool("repairs", false, "print repair analysis")
+	verbosePtr := flag.Bool("v", false, "verbose logging")
 	flag.Parse()
 
 	if len(*logPtr) == 0 {
 		log.Fatalf("You must specify the -f flag, giving a path to a TVS full log file")
 	}
+
+	common.VerboseLogging = *verbosePtr
 
 	logFile, err := os.Open(*logPtr)
 	if err != nil {
