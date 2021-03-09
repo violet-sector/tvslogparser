@@ -21,9 +21,14 @@ func (p *Player) GetShip() *ShipStats {
 
 func (p *Player) SelectShip(shipType string) {
 	p.ship = ShipStats{
+		shipType:               shipType,
 		level:                  1,
 		combatPilotingReliable: true,
 		combat:                 10,
 		piloting:               10,
 	}
+}
+
+func (p *Player) SetShip(shipType string) {
+	p.ship.shipType = shipType
 }

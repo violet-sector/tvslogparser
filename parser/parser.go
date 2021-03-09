@@ -26,14 +26,21 @@ func (ps *parserState) ignoreRecord(actionRecord string) bool {
 	if strings.HasPrefix(actionRecord, "Entered carrier") {
 		return true
 	}
+	if strings.HasPrefix(actionRecord, "Set vacation to start from tick") {
+		return true
+	}
 	for _, s := range []string{
 		"Taken sector damage",
 		"Earned domination bonus",
 		"Hit by atmospheric anomaly",
 		"Exited carrier",
 		"Hit by base explosion",
+		"Cloaked",
+		"Decloaked",
+		"Earned cloaker bonus",
+		"Deactivated or cancelled vacation",
+		"Auto-repair", // could be useful/interesting but in the same boat as sector damage and anomalies, which we're not tracking
 	} {
-
 		if actionRecord == s {
 			return true
 		}
@@ -86,6 +93,9 @@ func (ps *parserState) NewActionFromCSVRecord(record []string) (action.Action, e
 		}
 		return action.RepairFromCSVRecord(record, ps.myPlayer)
 	}
+	if strings.HasPrefix(actionRecord, "Changed ship to a") {
+		return action.ChangeShipFromCSVRecord(record)
+	}
 
 	return nil, errors.New("not implemented")
 }
@@ -100,6 +110,9 @@ func (ps *parserState) updateWithAction(turnAction action.Action) {
 	} else if turnAction.ActionType() == action.ActionTypeLevelUp {
 		asLevelUp := turnAction.(*action.LevelUp)
 		ps.myPlayer.GetShip().LevelUp(asLevelUp.Level)
+	} else if turnAction.ActionType() == action.ActionTypeChangeShip {
+		asChangeShip := turnAction.(*action.ChangeShip)
+		ps.myPlayer.SetShip(asChangeShip.ShipType)
 	}
 }
 

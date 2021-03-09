@@ -17,6 +17,8 @@ const (
 	ActionTypeAttack
 	ActionTypeRepair
 	ActionTypeSelfRep
+	ActionTypeChangeShip
+	ActionTypeAutoRep
 )
 
 type Action interface {
