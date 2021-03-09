@@ -34,9 +34,9 @@ func NewAnalysis(actions []action.Action) (*Attack, error) {
 				continue
 			}
 
-			analysis.sortedDamage = append(analysis.sortedDamage, attack.Damage)
-			analysis.attackDistribution[attack.Damage/bucketSize]++
-			analysis.totalDamage += attack.Damage
+			analysis.sortedDamage = append(analysis.sortedDamage, attack.TargetDamage)
+			analysis.attackDistribution[attack.TargetDamage/bucketSize]++
+			analysis.totalDamage += attack.TargetDamage
 			analysis.totalAttacks++
 		}
 	}

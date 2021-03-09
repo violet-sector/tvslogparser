@@ -34,9 +34,9 @@ func NewAnalysis(actions []action.Action) (*Repair, error) {
 				continue
 			}
 
-			analysis.sortedRepHP = append(analysis.sortedRepHP, repair.Hitpoints)
-			analysis.repDistribution[repair.Hitpoints/bucketSize]++
-			analysis.totalRepHP += repair.Hitpoints
+			analysis.sortedRepHP = append(analysis.sortedRepHP, repair.TargetHitpoints)
+			analysis.repDistribution[repair.TargetHitpoints/bucketSize]++
+			analysis.totalRepHP += repair.TargetHitpoints
 			analysis.totalReps++
 		}
 	}
