@@ -6,6 +6,6 @@ var VerboseLogging = false
 
 func Debugln(v ...interface{}) {
 	if VerboseLogging {
-		log.Println(v)
+		log.Println(v...)
 	}
 }
