@@ -93,9 +93,9 @@ func (ps *parserState) NewActionFromCSVRecord(record []string) (action.Action, e
 		}
 		return action.RepairFromCSVRecord(record, ps.myPlayer)
 	}
-	if strings.HasPrefix(actionRecord, "Changed ship to a") {
+	/*if strings.HasPrefix(actionRecord, "Changed ship to a") {
 		return action.ChangeShipFromCSVRecord(record)
-	}
+	}*/
 
 	return nil, errors.New("not implemented")
 }
@@ -110,10 +110,10 @@ func (ps *parserState) updateWithAction(turnAction action.Action) {
 	} else if turnAction.ActionType() == action.ActionTypeLevelUp {
 		asLevelUp := turnAction.(*action.LevelUp)
 		ps.myPlayer.GetShip().LevelUp(asLevelUp.Level)
-	} else if turnAction.ActionType() == action.ActionTypeChangeShip {
+	} /*else if turnAction.ActionType() == action.ActionTypeChangeShip {
 		asChangeShip := turnAction.(*action.ChangeShip)
 		ps.myPlayer.SetShip(asChangeShip.ShipType)
-	}
+	}*/
 }
 
 func ParseTVSLog(r io.Reader) ([]action.Action, error) {

@@ -1,7 +1,7 @@
 language: go
 
 go: 
- - 1.15.x
+ - 1.24.x
  - master
 
 before_install:
