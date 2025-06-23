@@ -1,1 +1,1 @@
-# tvslogparser [![Coverage Status](https://coveralls.io/repos/github/AlexCrane/tvslogparser/badge.svg?branch=main)](https://coveralls.io/github/AlexCrane/tvslogparser?branch=main) [![Go Report Card](https://goreportcard.com/badge/github.com/violet-sector/tvslogparser)](https://goreportcard.com/report/github.com/violet-sector/tvslogparser)
+# tvslogparser [![Go Report Card](https://goreportcard.com/badge/github.com/violet-sector/tvslogparser)](https://goreportcard.com/report/github.com/violet-sector/tvslogparser)
